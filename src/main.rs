@@ -2,9 +2,9 @@ mod curl;
 mod response;
 
 use anyhow::Result;
-use reqwest::{header::HeaderMap, Body, RequestBuilder};
+use reqwest::{header::HeaderMap, Body};
 use response::ResponseGetIspMetric;
-use std::{collections::HashMap, env::var};
+use std::env::var;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -24,32 +24,12 @@ async fn main() -> Result<()> {
     let host_id = var("HOST_ID").unwrap();
     let site_id = var("SITE_ID").unwrap();
 
-    // let mut sites = HashMap::new();
-    // sites.insert("hostId", host_id);
-    // sites.insert("siteId", site_id);
-
-    // let mut body_map = HashMap::new();
-    // body_map.insert("sites", sites);
-    //
     let mut body_map = curl::Body::new();
     body_map.with_host(host_id).with_site(site_id);
     let body_str = serde_json::to_string::<curl::Body>(&body_map);
     println!("{:?}", body_str);
 
     let body = Body::wrap(body_str.unwrap());
-
-    // let data = r#"
-    //     {
-    //       "sites": [
-    //         {
-    //           "hostId": "9C05D65983C90000000007F4456E00000000085FAB500000000065E5DF43:913329714",
-    //           "siteId": "660ca3ada0dda36af5c219c9"
-    //         }
-    //       ]
-    //     }
-    //     "#;
-
-    // let body = Body::wrap(data.to_string());
 
     let mut headers = HeaderMap::new();
 
